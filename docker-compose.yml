@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  # Supabase services
+  supabase-db:
+    image: supabase/postgres:15.1.0.117
+    container_name: knowledge-workspace-db
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_PORT: 5432
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - knowledge-workspace
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    container_name: knowledge-workspace-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - knowledge-workspace
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: knowledge-workspace-backend
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@supabase-db:5432/postgres
+      - REDIS_URL=redis://redis:6379
+      - SUPABASE_URL=http://localhost:54321
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - supabase-db
+      - redis
+    volumes:
+      - ./backend:/app
+    networks:
+      - knowledge-workspace
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: knowledge-workspace-frontend
+    environment:
+      - NEXT_PUBLIC_SUPABASE_URL=http://localhost:54321
+      - NEXT_PUBLIC_SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - knowledge-workspace
+    command: npm run dev
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  knowledge-workspace:
+    driver: bridge
