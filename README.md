@@ -1,11 +1,11 @@
-# Knowledge Workspace Platform
+# Co-Intel
 
 A multi-tenant workspace platform that combines structured documentation (like Notion) with AI-powered development assistance (like Cline), specifically designed for knowledge workers and development teams.
 
 ## 🏗️ Project Structure
 
 ```
-knowledge-workspace/
+co-intel/
 ├── memory-bank/                 # Memory Bank documentation system
 │   ├── projectbrief.md         # Core project vision and requirements
 │   ├── productContext.md       # User experience goals and market positioning
@@ -77,7 +77,7 @@ knowledge-workspace/
 ### 1. Clone and Setup
 ```bash
 git clone <repository-url>
-cd knowledge-workspace
+cd co-intel
 
 # Copy environment variables
 cp .env.example .env

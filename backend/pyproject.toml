@@ -1,9 +1,9 @@
 [project]
-name = "knowledge-workspace-backend"
+name = "co-intel-backend"
 version = "0.1.0"
-description = "Knowledge Workspace Platform - Backend API"
+description = "Co-Intel - Backend API"
 authors = [
-    {name = "Knowledge Workspace Team"}
+    {name = "Co-Intel Team"}
 ]
 readme = "README.md"
 requires-python = ">=3.11"
