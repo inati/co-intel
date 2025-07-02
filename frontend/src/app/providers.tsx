@@ -4,7 +4,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import { SessionContextProvider } from '@supabase/auth-helpers-react'
 import { CopilotKit } from '@copilotkit/react-core'
-import { CopilotSidebar } from '@copilotkit/react-ui'
 import { useState } from 'react'
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -26,9 +25,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           runtimeUrl="/api/copilotkit"
           showDevConsole={process.env.NODE_ENV === 'development'}
         >
-          <CopilotSidebar>
-            {children}
-          </CopilotSidebar>
+          {children}
         </CopilotKit>
       </QueryClientProvider>
     </SessionContextProvider>
